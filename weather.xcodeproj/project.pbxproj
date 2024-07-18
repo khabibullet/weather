@@ -54,14 +54,46 @@
 		3F659CA42C4932BB0061D929 /* weather */ = {
 			isa = PBXGroup;
 			children = (
-				3F659CA52C4932BB0061D929 /* AppDelegate.swift */,
-				3F659CA72C4932BB0061D929 /* SceneDelegate.swift */,
-				3F659CA92C4932BB0061D929 /* ViewController.swift */,
+				3F659CBA2C4937190061D929 /* App */,
+				3F659CB92C4937120061D929 /* Resources */,
+				3F659CBB2C4937A10061D929 /* Screens */,
+			);
+			path = weather;
+			sourceTree = "<group>";
+		};
+		3F659CB92C4937120061D929 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				3F659CAE2C4932BD0061D929 /* Assets.xcassets */,
 				3F659CB02C4932BD0061D929 /* LaunchScreen.storyboard */,
 				3F659CB32C4932BD0061D929 /* Info.plist */,
 			);
-			path = weather;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		3F659CBA2C4937190061D929 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				3F659CA52C4932BB0061D929 /* AppDelegate.swift */,
+				3F659CA72C4932BB0061D929 /* SceneDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		3F659CBB2C4937A10061D929 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				3F659CBC2C4937CC0061D929 /* WeatherScreen */,
+				3F659CA92C4932BB0061D929 /* ViewController.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		3F659CBC2C4937CC0061D929 /* WeatherScreen */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = WeatherScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,18 +312,20 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QAAFPU9H5Q;
+				DEVELOPMENT_TEAM = YZU63GB4P5;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = weather/Info.plist;
+				INFOPLIST_FILE = weather/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = Resources/LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.khabibullet.weather;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -307,18 +341,20 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QAAFPU9H5Q;
+				DEVELOPMENT_TEAM = YZU63GB4P5;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = weather/Info.plist;
+				INFOPLIST_FILE = weather/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = Resources/LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.khabibullet.weather;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
