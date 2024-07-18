@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  weather
+
+  Created by Irek Khabibullin on 18.07.2024.
+  
+*/
+
+"Sunny"         = "Солнечно";
+"Cloudy"        = "Пасмурно";
+"Party cloudy"  = "Облачно";
+"Rainy"         = "Дождь";
+"Thunderstorm"  = "Гроза";
+"Snowy"         = "Снег";
+"Windy"         = "Ветрено";
+"Hot"           = "Жарко";
+
+"Language"      = "Язык";
