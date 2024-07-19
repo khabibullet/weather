@@ -10,4 +10,6 @@ import UIKit
 struct WeatherImageCellViewModel {
     var image: UIImage?
     var imageUrl: URL?
+    
+    var onReuse: () -> ()
 }

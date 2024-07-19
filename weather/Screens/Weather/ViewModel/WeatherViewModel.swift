@@ -12,10 +12,11 @@ protocol WeatherViewModel: AnyObject {
     var weatherImageCells: [WeatherImageCellViewModel] { get }
     
     func setup(completion: @escaping () -> ())
+    func prefetchWeatherImageItem(at indexPath: IndexPath)
+    func cancelPrefetchingWeatherImageItem(at indexPath: IndexPath)
 }
 
 final class WeatherViewModelImp: WeatherViewModel {
-    
     private let weatherService: any WeatherService
     private let imagesProvider: any ImagesProvider
     
@@ -40,6 +41,11 @@ final class WeatherViewModelImp: WeatherViewModel {
         }
     }
     
+    func cancelPrefetchingWeatherImageItem(at indexPath: IndexPath) {
+        guard let url = weatherImageCells[indexPath.item].imageUrl else { return }
+        imagesProvider.cancelLoadingImage(url: url)
+    }
+    
     // MARK: Private methods
     
     private func fetchWeatherInfo(completion: @escaping () -> ()) {
@@ -50,7 +56,10 @@ final class WeatherViewModelImp: WeatherViewModel {
                 WeatherSelectorCellViewModel(title: weatherKind.title, isSelected: false)
             }
             self.weatherImageCells = weatherKinds.map { weatherKind in
-                WeatherImageCellViewModel(image: nil, imageUrl: URL(string: weatherKind.imageUrl))
+                WeatherImageCellViewModel(image: nil, imageUrl: URL(string: weatherKind.imageUrl), onReuse: { [weak self] in
+                    guard let self, let url = URL(string: weatherKind.imageUrl) else { return }
+                    self.imagesProvider.cancelLoadingImage(url: url)
+                })
             }
             completion()
         }

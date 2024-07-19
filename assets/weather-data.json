@@ -1,0 +1,48 @@
+{
+    [
+        {
+            "title": "Sunny",
+            "imageUrl": "https://images.unsplash.com/photo-1717735418396-b972808504ff"
+        },
+        {
+            "title": "Cloudy",
+            "imageUrl": "https://images.unsplash.com/photo-1610471618983-c5030cb8a9dc"
+        },
+        {
+            "title": "Partly cloudy",
+            "imageUrl": "https://images.unsplash.com/photo-1717650931639-8bc89d495b95"
+        },
+        {
+            "title": "Rain",
+            "imageUrl": "https://plus.unsplash.com/premium_photo-1666258224619-a018ae456f86"
+        },
+        {
+            "title": "Pouring rain",
+            "imageUrl": "https://images.unsplash.com/photo-1719045720595-a1d34fdaa076"
+        },
+        {
+            "title": "Thunderstorm",
+            "imageUrl": "https://images.unsplash.com/photo-1584267385289-81fdaa6efe7a"
+        },
+        {
+            "title": "Snowfall",
+            "imageUrl": "https://images.unsplash.com/photo-1521568901417-dd90e5373f35"
+        },
+        {
+            "title": "Wind",
+            "imageUrl": "https://plus.unsplash.com/premium_photo-1677668460855-97d1b5b1d72f"
+        },
+        {
+            "title": "Hot",
+            "imageUrl": "https://images.unsplash.com/photo-1518818062626-6a9aa1ed44d7"
+        },
+        {
+            "title": "Sunset",
+            "imageUrl": "https://images.unsplash.com/photo-1503803548695-c2a7b4a5b875"
+        },
+        {
+            "title": "Starry night",
+            "imageUrl": "https://images.unsplash.com/photo-1502318217862-aa4e294ba657"
+        },
+    ]
+}

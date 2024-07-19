@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WeatherKind {
+struct WeatherKind: Decodable {
     let title: String
     let imageUrl: String
 }

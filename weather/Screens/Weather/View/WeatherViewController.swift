@@ -51,16 +51,35 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
     // MARK: Private methods
 
     private func setupSubviews() {
-        imagesCollectionView.backgroundColor = .blue
+        imagesCollectionView.register(
+            WeatherImageCell.self,
+            forCellWithReuseIdentifier: WeatherImageCell.reuseIdentifier
+        )
+        imagesCollectionView.backgroundColor = .gray
+        imagesCollectionView.isPagingEnabled = true
+        imagesCollectionView.dataSource = self
+        imagesCollectionView.prefetchDataSource = self
+        imagesCollectionView.delegate = self
         
+        imagesCollectionView.addSubview(selectorCollectionView)
         selectorCollectionView.register(
             WeatherSelectorCell.self,
             forCellWithReuseIdentifier: WeatherSelectorCell.reuseIdentifier
         )
+        selectorCollectionView.backgroundColor = .yellow
+        selectorCollectionView.dataSource = self
+        selectorCollectionView.prefetchDataSource = self
+        selectorCollectionView.delegate = self
+        selectorCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setConstraints() {
-        
+        NSLayoutConstraint.activate([
+            selectorCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            selectorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            selectorCollectionView.trailingAnchor.constraint(equalTo: view.leadingAnchor),
+            selectorCollectionView.heightAnchor.constraint(equalToConstant: 80)
+        ])
     }
 }
 
@@ -76,7 +95,23 @@ extension WeatherViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        if collectionView === selectorCollectionView {
+            guard let cell = selectorCollectionView.dequeueReusableCell(
+                withReuseIdentifier: WeatherSelectorCell.reuseIdentifier, for: indexPath
+            ) as? WeatherSelectorCell else { return UICollectionViewCell() }
+            let cellViewModel = viewModel.weatherSelectorCells[indexPath.item]
+            cell.configureCell(with: cellViewModel)
+            return cell
+        } else if collectionView === imagesCollectionView {
+            guard let cell = imagesCollectionView.dequeueReusableCell(
+                withReuseIdentifier: WeatherImageCell.reuseIdentifier, for: indexPath
+            ) as? WeatherImageCell else { return UICollectionViewCell() }
+            let cellViewModel = viewModel.weatherImageCells[indexPath.item]
+            cell.configureCell(with: cellViewModel)
+            return cell
+        } else {
+            return UICollectionViewCell()
+        }
     }
     
     
@@ -89,9 +124,15 @@ extension WeatherViewController: UICollectionViewDelegate {
 extension WeatherViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         guard collectionView === imagesCollectionView else { return }
+        indexPaths.forEach { indexPath in
+            viewModel.prefetchWeatherImageItem(at: indexPath)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        
+        guard collectionView === imagesCollectionView else { return }
+        indexPaths.forEach { indexPath in
+            viewModel.cancelPrefetchingWeatherImageItem(at: indexPath)
+        }
     }
 }

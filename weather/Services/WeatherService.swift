@@ -13,51 +13,31 @@ protocol WeatherService: AnyObject {
 
 final class WeatherServiceImp: WeatherService {
     func getWeatherKinds(completion: @escaping ([WeatherKind]) -> ()) {
-        completion([
-            WeatherKind(
-                title: "Sunny",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/sunny.jpg"
-            ),
-            WeatherKind(
-                title: "Cloudy",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/cloudy.jpg"
-            ),
-            WeatherKind(
-                title: "Partly cloudy",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/partly-cloudy.jpg"
-            ),
-            WeatherKind(
-                title: "Rain",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/rain.jpg"
-            ),
-            WeatherKind(
-                title: "Pouring rain",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/pouring-rain.jpg"
-            ),
-            WeatherKind(
-                title: "Thunderstorm",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/thunderstorm.jpg"
-            ),
-            WeatherKind(
-                title: "Snowfall",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/snowfall.jpg"
-            ),
-            WeatherKind(
-                title: "Wind",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/wind.jpg"
-            ),
-            WeatherKind(
-                title: "Hot",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/hot.jpg"
-            ),
-            WeatherKind(
-                title: "Sunset",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/sunset.jpg"
-            ),
-            WeatherKind(
-                title: "Starry night",
-                imageUrl: "https://raw.githubusercontent.com/khabibullet/weather/master/assets/starry-night.jpg"
-            ),
-        ])
+        guard let url = URL(string: "https://raw.githubusercontent.com/khabibullet/weather/assets/weather-data.json") else {
+            completion([])
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 30
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                DispatchQueue.main.async {
+                    completion([])
+                }
+                return
+            }
+            
+            if let data, let weatherKinds = try? JSONDecoder().decode([WeatherKind].self, from: data) {
+                DispatchQueue.main.async {
+                    completion(weatherKinds)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion([])
+                }
+            }
+        }
     }
 }
