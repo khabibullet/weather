@@ -26,7 +26,7 @@ class WeatherImageCell: UICollectionViewCell {
     private func setupCell() {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.backgroundColor = .blue
+        imageView.backgroundColor = .white
         
         contentView.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -34,9 +34,7 @@ class WeatherImageCell: UICollectionViewCell {
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height),
-            imageView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
     

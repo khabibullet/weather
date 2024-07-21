@@ -12,8 +12,9 @@ protocol WeatherViewModel: AnyObject {
     var weatherImageCells: [WeatherImageCellViewModel] { get }
     
     func setup(completion: @escaping () -> ())
-    func prefetchWeatherImageItem(at indexPath: IndexPath)
-    func cancelPrefetchingWeatherImageItem(at indexPath: IndexPath)
+    func fetchWeatherImageItem(at indexPath: IndexPath, completion: (() -> ())?)
+    func cancelFetchingWeatherImageItem(at indexPath: IndexPath)
+    func selectWeather(at indexPath: IndexPath)
 }
 
 final class WeatherViewModelImp: WeatherViewModel {
@@ -22,6 +23,8 @@ final class WeatherViewModelImp: WeatherViewModel {
     
     var weatherSelectorCells: [WeatherSelectorCellViewModel] = []
     var weatherImageCells: [WeatherImageCellViewModel] = []
+    
+    private var selectedWeatherIndexPath: IndexPath?
     
     init(dependency: any DependencyContainer) {
         self.weatherService = dependency.weatherService
@@ -34,16 +37,27 @@ final class WeatherViewModelImp: WeatherViewModel {
         fetchWeatherInfo(completion: completion)
     }
     
-    func prefetchWeatherImageItem(at indexPath: IndexPath) {
+    func fetchWeatherImageItem(at indexPath: IndexPath, completion: (() -> ())?) {
         guard let url = weatherImageCells[indexPath.item].imageUrl else { return }
         imagesProvider.loadImage(url: url) { [weak self] image in
             self?.weatherImageCells[indexPath.item].image = image
+            completion?()
         }
     }
     
-    func cancelPrefetchingWeatherImageItem(at indexPath: IndexPath) {
+    func cancelFetchingWeatherImageItem(at indexPath: IndexPath) {
         guard let url = weatherImageCells[indexPath.item].imageUrl else { return }
         imagesProvider.cancelLoadingImage(url: url)
+    }
+    
+    func selectWeather(at indexPath: IndexPath) {
+        let indexPathToDeselect = selectedWeatherIndexPath
+        selectedWeatherIndexPath = indexPath
+        
+        if let deselectedItemId = indexPathToDeselect?.item {
+            weatherSelectorCells[deselectedItemId].isSelected = false
+        }
+        weatherSelectorCells[indexPath.item].isSelected = true
     }
     
     // MARK: Private methods

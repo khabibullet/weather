@@ -17,8 +17,10 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
     
     // MARK: Subviews
     
-    private let imagesCollectionView = UICollectionView()
-    private let selectorCollectionView = UICollectionView()
+    private var imagesCollectionView: UICollectionView!
+    private var selectorCollectionView: UICollectionView!
+    
+    private let blurredHeader = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     
     // MARK: Lifecycle
     
@@ -31,54 +33,94 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
-        view = imagesCollectionView
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .yellow
         
         setupSubviews()
         setConstraints()
         
         viewModel.setup { [weak self] in
-            self?.selectorCollectionView.reloadData()
-            self?.imagesCollectionView.reloadData()
+            guard let self else { return }
+            
+            self.selectorCollectionView.reloadData()
+            self.imagesCollectionView.reloadData()
+            
+            [0, 1].map { IndexPath(item: $0, section: 0) }.forEach { indexPath in
+                self.viewModel.fetchWeatherImageItem(at: indexPath) {
+                    self.imagesCollectionView.reloadItems(at: [indexPath])
+                }
+            }
         }
     }
     
     // MARK: Private methods
 
     private func setupSubviews() {
+        
+        let imagesCollectionFlowLayout = UICollectionViewFlowLayout()
+        imagesCollectionFlowLayout.scrollDirection = .horizontal
+        imagesCollectionFlowLayout.itemSize = UIScreen.main.bounds.size
+        imagesCollectionFlowLayout.minimumLineSpacing = .zero
+        
+        imagesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: imagesCollectionFlowLayout)
         imagesCollectionView.register(
             WeatherImageCell.self,
             forCellWithReuseIdentifier: WeatherImageCell.reuseIdentifier
         )
-        imagesCollectionView.backgroundColor = .gray
+        imagesCollectionView.backgroundColor = .white
         imagesCollectionView.isPagingEnabled = true
         imagesCollectionView.dataSource = self
         imagesCollectionView.prefetchDataSource = self
         imagesCollectionView.delegate = self
+        imagesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        imagesCollectionView.showsHorizontalScrollIndicator = false
+        imagesCollectionView.isScrollEnabled = false
+        view.addSubview(imagesCollectionView)
         
-        imagesCollectionView.addSubview(selectorCollectionView)
+        
+        blurredHeader.translatesAutoresizingMaskIntoConstraints = false
+        blurredHeader.alpha = 1.0
+        blurredHeader.layer.cornerRadius = 20
+        blurredHeader.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        blurredHeader.clipsToBounds = true
+        view.addSubview(blurredHeader)
+        
+        let selectorCollectionFlowLayout = UICollectionViewFlowLayout()
+        selectorCollectionFlowLayout.scrollDirection = .horizontal
+        selectorCollectionFlowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        selectorCollectionFlowLayout.minimumLineSpacing = 20
+        
+        selectorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: selectorCollectionFlowLayout)
         selectorCollectionView.register(
             WeatherSelectorCell.self,
             forCellWithReuseIdentifier: WeatherSelectorCell.reuseIdentifier
         )
-        selectorCollectionView.backgroundColor = .yellow
         selectorCollectionView.dataSource = self
         selectorCollectionView.prefetchDataSource = self
         selectorCollectionView.delegate = self
         selectorCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        selectorCollectionView.backgroundColor = .clear
+        selectorCollectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        selectorCollectionView.showsHorizontalScrollIndicator = false
+        view.addSubview(selectorCollectionView)
     }
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
+            imagesCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            imagesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            imagesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            imagesCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            blurredHeader.topAnchor.constraint(equalTo: view.topAnchor),
+            blurredHeader.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurredHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            blurredHeader.bottomAnchor.constraint(equalTo: selectorCollectionView.bottomAnchor, constant: 20),
+            
             selectorCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             selectorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            selectorCollectionView.trailingAnchor.constraint(equalTo: view.leadingAnchor),
-            selectorCollectionView.heightAnchor.constraint(equalToConstant: 80)
+            selectorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            selectorCollectionView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
@@ -118,21 +160,36 @@ extension WeatherViewController: UICollectionViewDataSource {
 }
 
 extension WeatherViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard collectionView === selectorCollectionView else { return }
+        
+        viewModel.selectWeather(at: indexPath)
+        selectorCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+        
+        imagesCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+    }
     
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    }
 }
 
 extension WeatherViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         guard collectionView === imagesCollectionView else { return }
         indexPaths.forEach { indexPath in
-            viewModel.prefetchWeatherImageItem(at: indexPath)
+            viewModel.fetchWeatherImageItem(at: indexPath) { [weak self] in
+                self?.imagesCollectionView.reloadItems(at: [indexPath])
+            }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         guard collectionView === imagesCollectionView else { return }
         indexPaths.forEach { indexPath in
-            viewModel.cancelPrefetchingWeatherImageItem(at: indexPath)
+            viewModel.cancelFetchingWeatherImageItem(at: indexPath)
         }
     }
 }

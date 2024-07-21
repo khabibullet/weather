@@ -13,13 +13,13 @@ protocol WeatherService: AnyObject {
 
 final class WeatherServiceImp: WeatherService {
     func getWeatherKinds(completion: @escaping ([WeatherKind]) -> ()) {
-        guard let url = URL(string: "https://raw.githubusercontent.com/khabibullet/weather/assets/weather-data.json") else {
+        guard let url = URL(string: "https://raw.githubusercontent.com/khabibullet/public/main/assets/weather/weather-data.json") else {
             completion([])
             return
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.timeoutInterval = 30
+        request.timeoutInterval = 15
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
@@ -38,6 +38,6 @@ final class WeatherServiceImp: WeatherService {
                     completion([])
                 }
             }
-        }
+        }.resume()
     }
 }

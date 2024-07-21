@@ -12,6 +12,8 @@ class WeatherSelectorCell: UICollectionViewCell {
     
     private let selectorLabel = UILabel()
     
+    private let container = UIView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCell()
@@ -22,19 +24,29 @@ class WeatherSelectorCell: UICollectionViewCell {
     }
     
     private func setupCell() {
-        selectorLabel.numberOfLines = 0
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.backgroundColor = .gray
+        container.alpha = 0.2
+        container.layer.cornerRadius = 15
+        contentView.addSubview(container)
+        
+        selectorLabel.translatesAutoresizingMaskIntoConstraints = false
+        selectorLabel.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
         selectorLabel.textAlignment = .natural
         selectorLabel.textColor = .black
-        
         contentView.addSubview(selectorLabel)
-        selectorLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            selectorLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            selectorLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            selectorLabel.widthAnchor.constraint(equalToConstant: 80),
+            container.topAnchor.constraint(equalTo: contentView.topAnchor),
+            container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            contentView.heightAnchor.constraint(equalToConstant: 60),
-            contentView.widthAnchor.constraint(equalToConstant: 100)
+            selectorLabel.topAnchor.constraint(equalTo: container.topAnchor),
+            selectorLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            selectorLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 10),
+            selectorLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10),
+            selectorLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -53,10 +65,10 @@ class WeatherSelectorCell: UICollectionViewCell {
     // MARK: Private methods
     
     private func setSelected() {
-        
+        self.isSelected = true
     }
     
     private func setUnselected() {
-        
+        self.isSelected = false
     }
 }
