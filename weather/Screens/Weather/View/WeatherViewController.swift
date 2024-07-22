@@ -107,7 +107,7 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
             blurredHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             blurredHeader.bottomAnchor.constraint(equalTo: selectorCollectionView.bottomAnchor, constant: 20),
             
-            selectorCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            selectorCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             selectorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             selectorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             selectorCollectionView.heightAnchor.constraint(equalToConstant: 50)
