@@ -39,24 +39,14 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
         setupSubviews()
         setConstraints()
         
-        viewModel.setup { [weak self] in
-            guard let self else { return }
-            
-            self.selectorCollectionView.reloadData()
-            self.imagesCollectionView.reloadData()
-            
-            [0, 1].map { IndexPath(item: $0, section: 0) }.forEach { indexPath in
-                self.viewModel.fetchWeatherImageItem(at: indexPath) {
-                    self.imagesCollectionView.reloadItems(at: [indexPath])
-                }
-            }
-        }
+        viewModel.setup(completion: { [weak self] initialIndexPath, prefetchIndexPaths in
+            self?.initialContentSetup(initialIndexPath, prefetchIndexPaths)
+        })
     }
     
     // MARK: Private methods
 
     private func setupSubviews() {
-        
         let imagesCollectionFlowLayout = UICollectionViewFlowLayout()
         imagesCollectionFlowLayout.scrollDirection = .horizontal
         imagesCollectionFlowLayout.itemSize = UIScreen.main.bounds.size
@@ -122,6 +112,20 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
             selectorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             selectorCollectionView.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
+    
+    private func initialContentSetup(_ initialIndexPath: IndexPath, _ prefetchIndexPaths: [IndexPath]) {
+        selectorCollectionView.reloadData()
+        imagesCollectionView.reloadData()
+        
+        ([initialIndexPath] + prefetchIndexPaths).forEach { indexPath in
+            viewModel.fetchWeatherImageItem(at: indexPath) { [weak self] in
+                self?.imagesCollectionView.reloadItems(at: [indexPath])
+            }
+        }
+        
+        selectorCollectionView.selectItem(at: initialIndexPath, animated: false, scrollPosition: .centeredHorizontally)
+        imagesCollectionView.selectItem(at: initialIndexPath, animated: false, scrollPosition: .centeredHorizontally)
     }
 }
 

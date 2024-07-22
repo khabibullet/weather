@@ -8,11 +8,12 @@
 
 "Sunny"         = "Sunny";
 "Cloudy"        = "Cloudy";
-"Party cloudy"  = "Party cloudy";
-"Rainy"         = "Rainy";
+"Partly cloudy"  = "Party cloudy";
+"Rain"          = "Rain";
+"Pouring rain"  = "Pouring rain";
 "Thunderstorm"  = "Thunderstorm";
-"Snowy"         = "Snowy";
+"Snowfall"      = "Snowfall";
 "Windy"         = "Windy";
-"Hot"           = "Hot";
-
-"Language"      = "Language";
+"Drought"       = "Drought";
+"Sunset"        = "Sunset";
+"Starry night"  = "Starry night";

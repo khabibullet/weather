@@ -11,8 +11,17 @@ class WeatherSelectorCell: UICollectionViewCell {
     // MARK: Subviews
     
     private let selectorLabel = UILabel()
-    
     private let container = UIView()
+    
+    // MARK: Public properties
+    
+    override var isSelected: Bool {
+        didSet {
+            updateSelection()
+        }
+    }
+    
+    // MARK: Lifecycle
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,6 +31,8 @@ class WeatherSelectorCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: Private methods
     
     private func setupCell() {
         container.translatesAutoresizingMaskIntoConstraints = false
@@ -50,25 +61,20 @@ class WeatherSelectorCell: UICollectionViewCell {
         ])
     }
     
+    private func updateSelection() {
+        if isSelected {
+            container.alpha = 0.5
+            selectorLabel.alpha = 1.0
+        } else {
+            container.alpha = 0.2
+            selectorLabel.alpha = 0.5
+        }
+    }
+    
     // MARK: Public methods
     
     func configureCell(with viewModel: WeatherSelectorCellViewModel) {
         selectorLabel.text = viewModel.title
-        
-        if viewModel.isSelected {
-            setSelected()
-        } else {
-            setUnselected()
-        }
-    }
-    
-    // MARK: Private methods
-    
-    private func setSelected() {
-        self.isSelected = true
-    }
-    
-    private func setUnselected() {
-        self.isSelected = false
+        isSelected = viewModel.isSelected
     }
 }

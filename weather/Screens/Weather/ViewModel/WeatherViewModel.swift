@@ -11,7 +11,7 @@ protocol WeatherViewModel: AnyObject {
     var weatherSelectorCells: [WeatherSelectorCellViewModel] { get }
     var weatherImageCells: [WeatherImageCellViewModel] { get }
     
-    func setup(completion: @escaping () -> ())
+    func setup(completion: @escaping (_ initial: IndexPath, _ prefetch: [IndexPath]) -> ())
     func fetchWeatherImageItem(at indexPath: IndexPath, completion: (() -> ())?)
     func cancelFetchingWeatherImageItem(at indexPath: IndexPath)
     func selectWeather(at indexPath: IndexPath)
@@ -33,7 +33,7 @@ final class WeatherViewModelImp: WeatherViewModel {
     
     // MARK: Public methods
     
-    func setup(completion: @escaping () -> ()) {
+    func setup(completion: @escaping (_ initial: IndexPath, _ prefetch: [IndexPath]) -> ()) {
         fetchWeatherInfo(completion: completion)
     }
     
@@ -62,20 +62,41 @@ final class WeatherViewModelImp: WeatherViewModel {
     
     // MARK: Private methods
     
-    private func fetchWeatherInfo(completion: @escaping () -> ()) {
+    private func fetchWeatherInfo(completion: @escaping (_ initial: IndexPath, _ prefetch: [IndexPath]) -> ()) {
         weatherService.getWeatherKinds { [weak self] weatherKinds in
             guard let self else { return }
             
             self.weatherSelectorCells = weatherKinds.map { weatherKind in
-                WeatherSelectorCellViewModel(title: weatherKind.title, isSelected: false)
+                WeatherSelectorCellViewModel(
+                    title: NSLocalizedString(weatherKind.title, comment: ""),
+                    isSelected: false
+                )
             }
             self.weatherImageCells = weatherKinds.map { weatherKind in
-                WeatherImageCellViewModel(image: nil, imageUrl: URL(string: weatherKind.imageUrl), onReuse: { [weak self] in
+                WeatherImageCellViewModel(
+                    image: nil,
+                    imageUrl: URL(string: weatherKind.imageUrl),
+                    onReuse: { [weak self] in
                     guard let self, let url = URL(string: weatherKind.imageUrl) else { return }
                     self.imagesProvider.cancelLoadingImage(url: url)
                 })
             }
-            completion()
+            
+            let randomSelectedId = Int.random(in: 0..<weatherKinds.count)
+            weatherSelectorCells[randomSelectedId].isSelected = true
+            let initialIndexPath = IndexPath(item: randomSelectedId, section: 0)
+            
+            var prefetchIDs = [IndexPath]()
+            let prevID = randomSelectedId - 1
+            let nextId = randomSelectedId + 1
+            if prevID >= 0 {
+                prefetchIDs.append(IndexPath(item: prevID, section: 0))
+            }
+            if nextId < weatherKinds.count {
+                prefetchIDs.append(IndexPath(item: nextId, section: 0))
+            }
+            
+            completion(initialIndexPath, prefetchIDs)
         }
     }
 }

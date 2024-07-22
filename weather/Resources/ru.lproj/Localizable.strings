@@ -7,12 +7,13 @@
 */
 
 "Sunny"         = "Солнечно";
-"Cloudy"        = "Пасмурно";
-"Party cloudy"  = "Облачно";
-"Rainy"         = "Дождь";
+"Cloudy"        = "Облачно";
+"Partly cloudy"  = "Переменная облачность";
+"Rain"          = "Дождь";
+"Pouring rain"  = "Ливень";
 "Thunderstorm"  = "Гроза";
-"Snowy"         = "Снег";
+"Snowfall"      = "Снегопад";
 "Windy"         = "Ветрено";
-"Hot"           = "Жарко";
-
-"Language"      = "Язык";
+"Drought"       = "Засуха";
+"Sunset"        = "Закат";
+"Starry night"  = "Звезды";
