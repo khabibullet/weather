@@ -78,7 +78,6 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
         let selectorCollectionFlowLayout = UICollectionViewFlowLayout()
         selectorCollectionFlowLayout.scrollDirection = .horizontal
         selectorCollectionFlowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        selectorCollectionFlowLayout.minimumLineSpacing = 20
         
         selectorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: selectorCollectionFlowLayout)
         selectorCollectionView.register(
@@ -86,7 +85,6 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
             forCellWithReuseIdentifier: WeatherSelectorCell.reuseIdentifier
         )
         selectorCollectionView.dataSource = self
-        selectorCollectionView.prefetchDataSource = self
         selectorCollectionView.delegate = self
         selectorCollectionView.translatesAutoresizingMaskIntoConstraints = false
         selectorCollectionView.backgroundColor = .clear
@@ -118,11 +116,7 @@ class WeatherViewController: UIViewController, WeatherViewControllable {
         selectorCollectionView.reloadData()
         imagesCollectionView.reloadData()
         
-        ([initialIndexPath] + prefetchIndexPaths).forEach { indexPath in
-            viewModel.fetchWeatherImageItem(at: indexPath) { [weak self] in
-                self?.imagesCollectionView.reloadItems(at: [indexPath])
-            }
-        }
+        self.collectionView(imagesCollectionView, prefetchItemsAt: [initialIndexPath] + prefetchIndexPaths)
         
         selectorCollectionView.selectItem(at: initialIndexPath, animated: false, scrollPosition: .centeredHorizontally)
         imagesCollectionView.selectItem(at: initialIndexPath, animated: false, scrollPosition: .centeredHorizontally)
@@ -172,28 +166,16 @@ extension WeatherViewController: UICollectionViewDelegate {
         
         imagesCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    }
 }
 
 extension WeatherViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         guard collectionView === imagesCollectionView else { return }
+        
         indexPaths.forEach { indexPath in
             viewModel.fetchWeatherImageItem(at: indexPath) { [weak self] in
-                self?.imagesCollectionView.reloadItems(at: [indexPath])
+                self?.imagesCollectionView.reconfigureItems(at: [indexPath])
             }
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        guard collectionView === imagesCollectionView else { return }
-        indexPaths.forEach { indexPath in
-            viewModel.cancelFetchingWeatherImageItem(at: indexPath)
         }
     }
 }

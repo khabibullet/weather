@@ -71,9 +71,11 @@ final class ImagesProviderImp: ImagesProvider {
     
     func cancelLoadingImage(url: URL) {
         lock.async {
-            self.loadingResponses.removeValue(forKey: url)
-            let dataTask = self.dataTasks.removeValue(forKey: url)
-            dataTask?.cancel()
+            if self.loadingResponses.contains(where: { $0.key == url }) {
+                self.loadingResponses.removeValue(forKey: url)
+                let dataTask = self.dataTasks.removeValue(forKey: url)
+                dataTask?.cancel()
+            }
         }
     }
     
